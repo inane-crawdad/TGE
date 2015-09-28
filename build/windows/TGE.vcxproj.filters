@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\src\engine\Common.h" />
+    <ClInclude Include="..\..\include\TGE.h" />
+    <ClInclude Include="..\..\src\engine\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\FuncDelegate.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\PlatformAPI.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\windows\MainWindow.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\externs\GL\glew.h">
+      <Filter>Externs\Glew\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\externs\GL\wglew.h">
+      <Filter>Externs\Glew\GL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\engine\main.cpp" />
+    <ClCompile Include="..\..\src\engine\Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\windows\PlatformUtils.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\windows\MainWindow.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\externs\glew.c">
+      <Filter>Externs\Glew</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{24d7a45a-762a-460b-a82c-cc36dcb97459}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{56c71c0e-a5a9-4ec3-abe6-3325400e925b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{d215ff22-677c-40b0-b4dd-4bd733359c74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{f6429bf8-418c-485b-b2d9-2314c56df672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externs">
+      <UniqueIdentifier>{00b129b0-8c4a-4086-89d2-c5b65d75d602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externs\Glew">
+      <UniqueIdentifier>{2ad0f131-99ce-4da9-9a18-0bdd98252313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externs\Glew\GL">
+      <UniqueIdentifier>{817fd65a-feee-49f1-bb4d-75c01a79b0ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

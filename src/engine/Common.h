@@ -6,9 +6,9 @@ using namespace TGE;
 
 #include "FuncDelegate.h"
 #include "PlatformAPI.h"
+#include "GL/glew.h"
 
 #ifdef PLATFORM_WINDOWS
-#include "GL\glew.h"
 #include "GL\wglew.h"
 #endif
 

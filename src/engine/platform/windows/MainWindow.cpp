@@ -254,6 +254,7 @@ HRESULT CMainWindow::ConfigureWindow(uint resX, uint resY, bool fullScreen)
 HRESULT CMainWindow::SetCaption(const char *pCaption)
 {
 	SetWindowText(_hWnd, pCaption);
+	return S_OK;
 }
 
 HRESULT CMainWindow::BeginMainLoop()

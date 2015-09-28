@@ -99,7 +99,7 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *m
 
 	SetWindowLongPtr(_hWnd, GWL_USERDATA, (LONG_PTR)this);
 
-	unsigned int msaa_samples = _msaaSamples;
+	uint msaa_samples = _msaaSamples;
 
 	PIXELFORMATDESCRIPTOR pfd;
 	ZeroMemory(&pfd, sizeof(PIXELFORMATDESCRIPTOR));
@@ -245,6 +245,11 @@ HRESULT CMainWindow::ConfigureWindow(uint resX, uint resY, bool fullScreen)
 
 	RECT rc = { 0, 0, resX, resY };
 	AdjustWindowRectEx(&rc, style, FALSE, style_ex);
+
+	SetWindowPos(_hWnd, HWND_BOTTOM, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_FRAMECHANGED);
+
+	if (IsWindowVisible(_hWnd) == FALSE)
+		ShowWindow(_hWnd, SW_SHOWNA);
 
 	SetForegroundWindow(_hWnd);
 

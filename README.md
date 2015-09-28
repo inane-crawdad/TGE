@@ -1,1 +1,1 @@
-# TGE
+Tiny Graphic Engine

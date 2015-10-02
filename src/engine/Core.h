@@ -22,6 +22,12 @@ class CCore : public ICore
 	CCore& operator=(const CCore&){}
 	~CCore();
 
+	void _MLoop();
+	void _MsgProc(const TGE::TWindowMessage& msg);
+
+	static void CALLBACK _s_MLoop(void *pParam);
+	static void CALLBACK _s_MsgProc(const TGE::TWindowMessage& msg, void *pParam);
+
 	friend bool TGE::GetEngine(ICore *& pICore);
 	friend void TGE::FreeEngine();
 

@@ -4,6 +4,12 @@ TWindowMessage WinAPIMsgToEngMsg(UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (Msg)
 	{
+	case(WM_CLOSE) :
+		return TGE::TWindowMessage(TGE::E_WINDOW_MESSAGE_TYPE::WMT_CLOSE);
+		break;
+	case(WM_DESTROY) :
+		return TGE::TWindowMessage(TGE::E_WINDOW_MESSAGE_TYPE::WMT_DESTROY);
+		break;
 	default:
 		return TWindowMessage();
 		break;

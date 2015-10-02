@@ -28,6 +28,9 @@ void TGE::FreeEngine()
 CCore::CCore():
 _doExit(false)
 {
+	_delMLoop.Add(_s_MLoop, this);
+	_delMsgProc.Add(_s_MsgProc, this);
+
 	_pMainWindow = new CMainWindow(this);
 }
 
@@ -61,6 +64,8 @@ HRESULT CALLBACK CCore::InitializeEngine(uint resX, uint resY, const char *appNa
 		_pMainWindow->SetCaption(appName);
 		if (FAILED(_pMainWindow->ConfigureWindow(resX, resY, (E_ENGINE_INIT_FLAGS::EIF_FULLSCREEN & initFlags))))
 			return E_ABORT;
+
+		AddToLog("Engine initializing is done!", false);
 
 		if (!_delInit.IsEmpty())
 		{
@@ -147,6 +152,48 @@ HRESULT CALLBACK CCore::AddToLog(const char *txt, bool isError)
 	return S_OK;
 }
 
+void CCore::_s_MLoop(void *pParam)
+{
+	((CCore*)pParam)->_MLoop();
+}
+
+void CCore::_s_MsgProc(const TGE::TWindowMessage& msg, void *pParam)
+{
+	((CCore*)pParam)->_MsgProc(msg);
+}
+
+void CCore::_MLoop()
+{
+	if (_doExit)
+	{
+		_pMainWindow->KillWindow();
+		return;
+	}
+}
+
+void CCore::_MsgProc(const TGE::TWindowMessage& msg)
+{
+	switch (msg.messageType)
+	{
+	case(TGE::E_WINDOW_MESSAGE_TYPE::WMT_CLOSE) :
+		_doExit = true;
+		break;
+	case(TGE::E_WINDOW_MESSAGE_TYPE::WMT_DESTROY) :
+
+		AddToLog("Finalizing engine ...", false);
+
+		if (!_delFree.IsEmpty())
+		{
+			AddToLog("Start user's free procedure", false);
+			_delFree.Invoke();
+			AddToLog("Done!", false);
+		}
+		
+		break;
+	default:
+		break;
+	}
+}
 
 // Testing
 

@@ -42,6 +42,8 @@ LRESULT CALLBACK CMainWindow::_s_WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPA
 
 		this_ptr->_msgProcDel->Invoke(WinAPIMsgToEngMsg(msg, wParam, lParam));
 
+		if (msg == WM_CLOSE)
+			return 0;
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);

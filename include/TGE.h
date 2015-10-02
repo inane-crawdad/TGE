@@ -52,6 +52,7 @@ namespace TGE
 	{
 		WMT_UNKNOWN = 0,
 		WMT_CLOSE,
+		WMT_DESTROY,
 		WMT_SIZE,
 		WMT_KEY_DOWN,
 		WMT_KEY_UP,

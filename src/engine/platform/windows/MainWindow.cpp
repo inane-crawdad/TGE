@@ -10,10 +10,29 @@ CMainWindow::CMainWindow(ICore *pCore) :
 {}
 
 CMainWindow::~CMainWindow()
-{}
+{
+	if (_hGLRC)
+	{
+		if(!wglMakeCurrent(NULL, NULL))
+			_pCore->AddToLog("Can't release device context and render context", false);
+		
+		if (!wglDeleteContext(_hGLRC))
+			_pCore->AddToLog("Can't properly delete render context", false);
+	}
+
+
+	if (_hInst != NULL && !UnregisterClass("TGE Window Class", _hInst))
+	{
+		_hInst = NULL;
+		_pCore->AddToLog("Can't unregister window class", false);
+	}
+	else
+		_pCore->AddToLog("Window closed properly", false);
+}
 
 LRESULT CALLBACK CMainWindow::_s_WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	// get prior saved pointer to this object
 	CMainWindow *this_ptr = (CMainWindow *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 	if (this_ptr)
@@ -79,24 +98,25 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *m
 
 	if (RegisterClassEx(&wc) == FALSE)
 	{
-		MessageBox(NULL, "Can't register window class", "Error", MB_OK);
-		return FALSE;
+		_pCore->AddToLog("Can't register window class", false);
+		return E_FAIL;
 	}
 
 	_hWnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, "TGEApp", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 320, 240, NULL, NULL, _hInst, NULL);
 
 	if (!_hWnd)
 	{
-		MessageBox(NULL, "Can't create window", "Error", MB_OK);
-		return FALSE;
+		_pCore->AddToLog("Can't create window", false);
+		return E_FAIL;
 	}
 
 	if (!(_hDC = GetDC(_hWnd)))
 	{
-		MessageBox(NULL, "Can't get draw context", "Error", MB_OK);
-		return FALSE;
+		_pCore->AddToLog("Can't get draw context", false);
+		return E_FAIL;
 	}
 
+	// save pointer to this object in user data
 	SetWindowLongPtr(_hWnd, GWL_USERDATA, (LONG_PTR)this);
 
 	uint msaa_samples = _msaaSamples;
@@ -131,7 +151,7 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *m
 			)
 		{
 			msaa_samples = 1;
-			MessageBox(NULL, "Error(s) while performing OpenGL MSAA preinit routine", "Error", MB_OK);
+			_pCore->AddToLog("Error(s) while performing OpenGL MSAA preinit routine", false);
 		}
 		else
 		{
@@ -163,7 +183,7 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *m
 					pixel_format = tmp_pixel_format;
 				else
 				{
-					MessageBox(NULL, "Can't find pixel format for required number of samples", "Error", MB_OK);
+					_pCore->AddToLog("Can't find pixel format for required number of samples", false);
 					msaa_samples = 1;
 				}
 			}
@@ -176,51 +196,54 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *m
 			(temp_dc != NULL && !ReleaseDC(temp_wnd, temp_dc)) ||
 			(temp_wnd != NULL && !DestroyWindow(temp_wnd))
 			)
-			MessageBox(NULL, "Error(s) while cleaning resources for OpenGL MSAA preinit routine", "Error", MB_OK);
+			_pCore->AddToLog("Error(s) while cleaning resources for OpenGL MSAA preinit routine", false);
 	}
 
 	if (pixel_format == NULL && (pixel_format = ChoosePixelFormat(_hDC, &pfd)))
 	{
-		MessageBox(NULL, "Can't choose pixel format", "Error", MB_OK);
-		return FALSE;
+		_pCore->AddToLog("Can't choose pixel format", false);
+		return E_ABORT;
 	}
 
 	if (!SetPixelFormat(_hDC, pixel_format, &pfd))
 	{
-		MessageBox(NULL, "Can't set pixel format", "Error", MB_OK);
-		return FALSE;
+		_pCore->AddToLog("Can't set pixel format", false);
+		return E_ABORT;
 	}
 
 	if (!(_hGLRC = wglCreateContext(_hDC)))
 	{
-		MessageBox(NULL, "Can't create render context", "Error", MB_OK);
-		return FALSE;
+		_pCore->AddToLog("Can't create render context", false);
+		return E_ABORT;
 	}
 
 	if (!wglMakeCurrent(_hDC, _hGLRC))
 	{
-		MessageBox(NULL, "Can't make current render context", "Error", MB_OK);
-		return FALSE;
+		_pCore->AddToLog("Can't make current render context", false);
+		return E_ABORT;
 	}
 
 	GLenum err = glewInit();
 	if (GLEW_OK != err)
 	{
-		MessageBox(NULL, "Can't init GLEW", "Error", MB_OK);
-		return FALSE;
+		_pCore->AddToLog("Can't make current render context", false);
+		return E_ABORT;
 	}
 
 	if (WGLEW_EXT_swap_control)
 		wglSwapIntervalEXT(1);
 
-	return TRUE;
+	return S_OK;
 }
 
 HRESULT CMainWindow::ConfigureWindow(uint resX, uint resY, bool fullScreen)
 {
 	if (!_hWnd)
+	{
+		_pCore->AddToLog("Window's handle does not exist", false);
 		return E_ABORT;
-
+	}
+	
 	_pCore->AddToLog("Configuring window", false);
 
 	DWORD style = WS_VISIBLE;
@@ -231,13 +254,13 @@ HRESULT CMainWindow::ConfigureWindow(uint resX, uint resY, bool fullScreen)
 	else
 		style |= WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX;
 
-	if (SetWindowLongPtr(_hWnd, GWL_EXSTYLE, style_ex) == 0)
+	if (SetWindowLong(_hWnd, GWL_EXSTYLE, style_ex) == 0)
 	{
 		_pCore->AddToLog("Can't set window ex style", false);
 		return E_ABORT;
 	}
 
-	if (SetWindowLongPtr(_hWnd, GWL_STYLE, style) == 0)
+	if (SetWindowLong(_hWnd, GWL_STYLE, style) == 0)
 	{
 		_pCore->AddToLog("Can't set window style", false);
 		return E_ABORT;
@@ -246,10 +269,7 @@ HRESULT CMainWindow::ConfigureWindow(uint resX, uint resY, bool fullScreen)
 	RECT rc = { 0, 0, resX, resY };
 	AdjustWindowRectEx(&rc, style, FALSE, style_ex);
 
-	SetWindowPos(_hWnd, HWND_BOTTOM, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_FRAMECHANGED);
-
-	if (IsWindowVisible(_hWnd) == FALSE)
-		ShowWindow(_hWnd, SW_SHOWNA);
+	SetWindowPos(_hWnd, HWND_TOP, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_FRAMECHANGED);
 
 	SetForegroundWindow(_hWnd);
 
@@ -269,6 +289,15 @@ HRESULT CMainWindow::BeginMainLoop()
 
 HRESULT CMainWindow::KillWindow()
 {
+	if (_hDC != NULL && !ReleaseDC(_hWnd, _hDC))
+		_pCore->AddToLog("Can't release device context", false);
+
+	if (_hWnd != NULL && !DestroyWindow(_hWnd))
+	{
+		_pCore->AddToLog("Can't destroy window", false);
+		return E_ABORT;
+	}
+		
 	return S_OK;
 }
 

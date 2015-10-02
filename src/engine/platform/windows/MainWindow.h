@@ -24,13 +24,13 @@ public:
 	CMainWindow(ICore *pCore);
 	~CMainWindow();
 
-	HRESULT InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *msgProcDelegate);
-	HRESULT ConfigureWindow(uint resX, uint resY, bool fullScreen);
-	HRESULT SetCaption(const char *pCaption);
-	HRESULT BeginMainLoop();
-	HRESULT KillWindow();
-	HRESULT Free();
+	HRESULT InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *msgProcDelegate) override final;
+	HRESULT ConfigureWindow(uint resX, uint resY, bool fullScreen) override final;
+	HRESULT SetCaption(const char *pCaption) override final;
+	HRESULT BeginMainLoop() override final;
+	HRESULT KillWindow() override final;
+	HRESULT Free() override final;
 };
 
 
-#endif
+#endif//_MAINWINDOW_H_

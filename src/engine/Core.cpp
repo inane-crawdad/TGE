@@ -18,7 +18,7 @@ bool TGE::GetEngine(ICore *& pICore)
 
 void TGE::FreeEngine()
 {
-	if (pCore == nullptr)
+	if (pCore != nullptr)
 	{
 		delete pCore;
 		pCore = nullptr;

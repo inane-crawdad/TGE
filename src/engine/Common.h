@@ -6,10 +6,11 @@ using namespace TGE;
 
 #include "FuncDelegate.h"
 #include "PlatformAPI.h"
+#include "Utils.h"
 #include "GL/glew.h"
 
 #ifdef PLATFORM_WINDOWS
-#include "GL\wglew.h"
+#include "GL/wglew.h"
 #endif
 
 // std libs

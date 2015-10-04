@@ -69,7 +69,7 @@ int CMainWindow::_BeginMainLoop()
 		}
 		else
 		{
-			_procDel->Invoke();
+			_mLoopDel->Invoke();
 			SwapBuffers(_hDC);
 		}
 
@@ -80,15 +80,15 @@ int CMainWindow::_BeginMainLoop()
 	return (int)msg.wParam;
 }
 
-HRESULT CMainWindow::InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *msgProcDelegate)
+HRESULT CMainWindow::InitWindow(TProcDelegate *mLoopDelegate, TMsgProcDelegate *msgProcDelegate)
 {
-	_procDel = procDelegate;
+	_mLoopDel = mLoopDelegate;
 	_msgProcDel = msgProcDelegate;
 	WNDCLASSEX wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
-	wc.lpszClassName = "TGE Window Class";
+	wc.lpszClassName = TEXT("TGE Window Class");
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.hInstance = _hInst;
 	wc.lpfnWndProc = (WNDPROC)CMainWindow::_s_WndProc;
@@ -104,7 +104,7 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *m
 		return E_FAIL;
 	}
 
-	_hWnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, "TGEApp", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 320, 240, NULL, NULL, _hInst, NULL);
+	_hWnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, TEXT("TGEApp"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 320, 240, NULL, NULL, _hInst, NULL);
 
 	if (!_hWnd)
 	{
@@ -144,7 +144,7 @@ HRESULT CMainWindow::InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *m
 		int temp_pixel_format;
 
 		if (
-			!(temp_wnd = CreateWindowEx(0, "STATIC", NULL, 0, 0, 0, 0, 0, 0, 0, 0, NULL)) ||
+			!(temp_wnd = CreateWindowEx(0, TEXT("STATIC"), NULL, 0, 0, 0, 0, 0, 0, 0, 0, NULL)) ||
 			!(temp_dc = GetDC(temp_wnd)) ||
 			!(temp_pixel_format = ChoosePixelFormat(temp_dc, &pfd)) ||
 			!SetPixelFormat(temp_dc, temp_pixel_format, &pfd) ||
@@ -281,6 +281,32 @@ HRESULT CMainWindow::ConfigureWindow(uint resX, uint resY, bool fullScreen)
 HRESULT CMainWindow::SetCaption(const char *pCaption)
 {
 	SetWindowText(_hWnd, pCaption);
+	return S_OK;
+}
+
+HRESULT CMainWindow::GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom)
+{
+	if (!_hWnd)
+		return E_FAIL;
+
+	RECT rect;
+
+	::GetClientRect(_hWnd, &rect);
+
+	POINT lt, rb;
+	lt.x = rect.left;
+	lt.y = rect.top;
+	rb.x = rect.right;
+	rb.y = rect.bottom;
+
+	::ClientToScreen(_hWnd, &lt);
+	::ClientToScreen(_hWnd, &rb);
+
+	left = lt.x;
+	right = rb.x;
+	top = lt.y;
+	bottom = rb.y;
+
 	return S_OK;
 }
 

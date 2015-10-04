@@ -1,5 +1,9 @@
 #include "Core.h"
+
+#ifdef PLATFORM_WINDOWS
 #include "platform\windows\MainWindow.h"
+#include "platform\windows\Input.h"
+#endif
 
 CCore *pCore = nullptr;
 
@@ -26,7 +30,9 @@ void TGE::FreeEngine()
 }
 
 CCore::CCore():
-_doExit(false)
+_doExit(false),
+_processInterval(16),
+_pInput(nullptr)
 {
 	_delMLoop.Add(_s_MLoop, this);
 	_delMsgProc.Add(_s_MsgProc, this);
@@ -65,6 +71,8 @@ HRESULT CALLBACK CCore::InitializeEngine(uint resX, uint resY, const char *appNa
 		if (FAILED(_pMainWindow->ConfigureWindow(resX, resY, (E_ENGINE_INIT_FLAGS::EIF_FULLSCREEN & initFlags))))
 			return E_ABORT;
 
+		_pInput = new CInput(this);
+
 		AddToLog("Engine initializing is done!", false);
 
 		if (!_delInit.IsEmpty())
@@ -74,6 +82,7 @@ HRESULT CALLBACK CCore::InitializeEngine(uint resX, uint resY, const char *appNa
 			AddToLog("Done!", false);
 		}
 
+		_oldTime = GetPerfTimer() / 1000;
 		_pMainWindow->BeginMainLoop();
 	}
 	else
@@ -169,6 +178,23 @@ void CCore::_MLoop()
 		_pMainWindow->KillWindow();
 		return;
 	}
+
+	auto time = GetPerfTimer() / 1000;
+	auto timeDelta = time - _oldTime;
+
+	bool flag = false;
+	uint cycles_count = (uint)(timeDelta / _processInterval);
+	for (uint i = 0; i < cycles_count; i++)
+	{
+		if (!_delProcess.IsEmpty())
+			_delProcess.Invoke();
+		flag = true;
+	}
+
+	if(flag)
+		_oldTime = time - timeDelta % _processInterval;
+
+	_delRender.Invoke();
 }
 
 void CCore::_MsgProc(const TGE::TWindowMessage& msg)
@@ -177,6 +203,9 @@ void CCore::_MsgProc(const TGE::TWindowMessage& msg)
 	{
 	case(TGE::E_WINDOW_MESSAGE_TYPE::WMT_CLOSE) :
 		_doExit = true;
+		break;
+	case(TGE::E_WINDOW_MESSAGE_TYPE::WMT_REDRAW) :
+		_delMLoop.Invoke();
 		break;
 	case(TGE::E_WINDOW_MESSAGE_TYPE::WMT_DESTROY) :
 
@@ -195,17 +224,16 @@ void CCore::_MsgProc(const TGE::TWindowMessage& msg)
 	}
 }
 
-// Testing
-
-
-void CCore::TestDelegates()
+HRESULT CCore::GetInput(IInput *&pInput)
 {
-	_delInit.Invoke();
-	_delFree.Invoke();
-	_delProcess.Invoke();
-	_delRender.Invoke();
+	if (_pInput == nullptr)
+		return E_ABORT;
 
-	_delMsgProc.Invoke(TGE::TWindowMessage());
-	//_delMsgProc.Remove(MsgProcFunc, this);
+	pInput = _pInput;
+	return S_OK;
 }
-//
+
+IMainWindow* CCore::GetMainWindow() const
+{
+	return _pMainWindow;
+}

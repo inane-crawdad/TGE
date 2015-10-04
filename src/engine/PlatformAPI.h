@@ -10,6 +10,7 @@ public:
 	virtual HRESULT InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *msgProcDelegate) = 0;
 	virtual HRESULT ConfigureWindow(TGE::uint resX, TGE::uint resY, bool fullScreen) = 0;
 	virtual HRESULT SetCaption(const char *pCaption) = 0;
+	virtual HRESULT GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom) = 0;
 	virtual HRESULT BeginMainLoop() = 0;
 	virtual HRESULT KillWindow() = 0;
 	virtual HRESULT Free() = 0;
@@ -33,6 +34,7 @@ void EngMsgToWinAPIMsg(const TGE::TWindowMessage &engMsg, UINT &Msg, WPARAM &wPa
 
 #endif
 
+uint64 GetPerfTimer();
 void GetLocalSysTime(TSysTime &time);
 void Terminate();
 

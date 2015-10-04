@@ -3,6 +3,8 @@
 
 #include "Common.h"
 
+class CInput;
+
 class CCore : public ICore
 {
 	TProcDelegate		_delProcess,
@@ -14,8 +16,12 @@ class CCore : public ICore
 	std::fstream		_logFile;
 
 	IMainWindow			*_pMainWindow;
+	CInput				*_pInput;
 
 	bool				_doExit;
+
+	uint				_processInterval;
+	uint64				_oldTime;
 
 	CCore();
 	CCore(const CCore&){}
@@ -33,13 +39,16 @@ class CCore : public ICore
 
 public:
 
+	TMsgProcDelegate* pDMessageProc() { return &_delMsgProc; }
+	IMainWindow* GetMainWindow() const;
+
 	HRESULT CALLBACK InitializeEngine(uint resX, uint resY, const char *appName, E_ENGINE_INIT_FLAGS initFlags) override final;
 	HRESULT CALLBACK QuitEngine() override final;
 	HRESULT CALLBACK AddFunction(E_FUNC_TYPE funcType, void(CALLBACK *func)(void *pParam), void *pParam = nullptr) override final;
 	HRESULT CALLBACK RemoveFunction(E_FUNC_TYPE funcType, void(CALLBACK *func)(void *pParam), void *pParam = nullptr) override final;
 	HRESULT CALLBACK AddToLog(const char *txt, bool isError) override final;
 
-	void TestDelegates() override final;
+	HRESULT CALLBACK GetInput(IInput *&pInput) override final;
 };
 
 #endif //_CORE_H_

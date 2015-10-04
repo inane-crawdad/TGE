@@ -14,12 +14,15 @@ class CMainWindow : public IMainWindow
 	uint				_msaaSamples;
 
 
-	TProcDelegate		*_procDel;
+	TProcDelegate		*_mLoopDel;
 	TMsgProcDelegate	*_msgProcDel;
 
 	static LRESULT CALLBACK _s_WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	int CMainWindow::_BeginMainLoop();
+
+	CMainWindow(const CMainWindow&);
+	CMainWindow& operator=(const CMainWindow&);
 public:
 	CMainWindow(ICore *pCore);
 	~CMainWindow();
@@ -27,6 +30,7 @@ public:
 	HRESULT InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *msgProcDelegate) override final;
 	HRESULT ConfigureWindow(uint resX, uint resY, bool fullScreen) override final;
 	HRESULT SetCaption(const char *pCaption) override final;
+	HRESULT GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom) override final;
 	HRESULT BeginMainLoop() override final;
 	HRESULT KillWindow() override final;
 	HRESULT Free() override final;

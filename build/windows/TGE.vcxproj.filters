@@ -21,6 +21,10 @@
     <ClInclude Include="..\..\src\engine\externs\GL\wglew.h">
       <Filter>Externs\Glew\GL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\engine\Utils.h" />
+    <ClInclude Include="..\..\src\engine\platform\windows\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\engine\main.cpp" />
@@ -35,6 +39,10 @@
     </ClCompile>
     <ClCompile Include="..\..\src\engine\externs\glew.c">
       <Filter>Externs\Glew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\Utils.cpp" />
+    <ClCompile Include="..\..\src\engine\platform\windows\Input.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

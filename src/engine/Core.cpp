@@ -53,7 +53,7 @@ CCore::~CCore()
 
 HRESULT CALLBACK CCore::InitializeEngine(uint resX, uint resY, const char *appName, E_ENGINE_INIT_FLAGS initFlags)
 {
-	if (!(initFlags & E_ENGINE_INIT_FLAGS::EIF_NO_LOG))
+	if (!(initFlags & EIF_NO_LOG))
 	{
 		_logFile.setf(std::ios_base::adjustfield);
 		_logFile.open("log.txt", std::ios::out | std::ios::trunc);
@@ -68,7 +68,11 @@ HRESULT CALLBACK CCore::InitializeEngine(uint resX, uint resY, const char *appNa
 	if (SUCCEEDED(_pMainWindow->InitWindow(&_delMLoop, &_delMsgProc)))
 	{
 		_pMainWindow->SetCaption(appName);
-		if (FAILED(_pMainWindow->ConfigureWindow(resX, resY, (E_ENGINE_INIT_FLAGS::EIF_FULLSCREEN & initFlags))))
+
+		if ((EIF_FULLSCREEN & initFlags) && (EIF_NATIVE_RESOLUTION & initFlags))
+			GetDisplaySize(resX, resY);
+
+		if (FAILED(_pMainWindow->ConfigureWindow(resX, resY, (EIF_FULLSCREEN & initFlags))))
 			return E_ABORT;
 
 		_pInput = new CInput(this);
@@ -99,16 +103,16 @@ HRESULT CALLBACK CCore::AddFunction(E_FUNC_TYPE funcType, void(CALLBACK *func)(v
 {
 	switch (funcType)
 	{
-	case TGE::FT_PROCESS:
+	case FT_PROCESS:
 		_delProcess.Add(func, pParam);
 		break;
-	case TGE::FT_RENDER:
+	case FT_RENDER:
 		_delRender.Add(func, pParam);
 		break;
-	case TGE::FT_INIT:
+	case FT_INIT:
 		_delInit.Add(func, pParam);
 		break;
-	case TGE::FT_FREE:
+	case FT_FREE:
 		_delFree.Add(func, pParam);
 		break;
 	default:
@@ -121,16 +125,16 @@ HRESULT CALLBACK CCore::RemoveFunction(E_FUNC_TYPE funcType, void(CALLBACK *func
 {
 	switch (funcType)
 	{
-	case TGE::FT_PROCESS:
+	case FT_PROCESS:
 		_delProcess.Remove(func, pParam);
 		break;
-	case TGE::FT_RENDER:
+	case FT_RENDER:
 		_delRender.Remove(func, pParam);
 		break;
-	case TGE::FT_INIT:
+	case FT_INIT:
 		_delInit.Remove(func, pParam);
 		break;
-	case TGE::FT_FREE:
+	case FT_FREE:
 		_delFree.Remove(func, pParam);
 		break;
 	default:
@@ -166,7 +170,7 @@ void CCore::_s_MLoop(void *pParam)
 	((CCore*)pParam)->_MLoop();
 }
 
-void CCore::_s_MsgProc(const TGE::TWindowMessage& msg, void *pParam)
+void CCore::_s_MsgProc(const TWindowMessage& msg, void *pParam)
 {
 	((CCore*)pParam)->_MsgProc(msg);
 }
@@ -197,17 +201,17 @@ void CCore::_MLoop()
 	_delRender.Invoke();
 }
 
-void CCore::_MsgProc(const TGE::TWindowMessage& msg)
+void CCore::_MsgProc(const TWindowMessage& msg)
 {
 	switch (msg.messageType)
 	{
-	case(TGE::E_WINDOW_MESSAGE_TYPE::WMT_CLOSE) :
+	case(WMT_CLOSE) :
 		_doExit = true;
 		break;
-	case(TGE::E_WINDOW_MESSAGE_TYPE::WMT_REDRAW) :
+	case(WMT_REDRAW) :
 		_delMLoop.Invoke();
 		break;
-	case(TGE::E_WINDOW_MESSAGE_TYPE::WMT_DESTROY) :
+	case(WMT_DESTROY) :
 
 		AddToLog("Finalizing engine ...", false);
 

@@ -31,6 +31,7 @@ public:
 	HRESULT ConfigureWindow(uint resX, uint resY, bool fullScreen) override final;
 	HRESULT SetCaption(const char *pCaption) override final;
 	HRESULT GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom) override final;
+	HRESULT GetWindowHandle(WindowHandle &winHandle) override final;
 	HRESULT BeginMainLoop() override final;
 	HRESULT KillWindow() override final;
 	HRESULT Free() override final;

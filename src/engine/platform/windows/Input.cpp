@@ -2,9 +2,12 @@
 
 CInput::CInput(CCore *pCore):
 _pCore(pCore),
+_focused(true),
 _exclusive(false),
 _hideCursor(false),
-_curAlwaysInCenter(false)
+_curAlwaysInCenter(false),
+_centerX(0),
+_centerY(0)
 {
 	_mouseState.X = 0;
 	_mouseState.Y = 0;
@@ -17,7 +20,10 @@ _curAlwaysInCenter(false)
 
 	ZeroMemory(_keys, 256);
 
+	_pCore->GetMainWindow()->GetWindowHandle(_hWnd);
+
 	_pCore->pDMessageProc()->Add(_s_MsgProc, this);
+	_pCore->AddFunction(FT_PROCESS, _s_Process, this);
 
 	_pCore->AddToLog("Input subsystem was initialized!", false);
 }
@@ -27,15 +33,16 @@ CInput::~CInput()
 		ClipCursor(NULL);
 
 	_pCore->pDMessageProc()->Remove(_s_MsgProc, this);
+	_pCore->RemoveFunction(FT_PROCESS, _s_Process, this);
 
 	_pCore->AddToLog("Input subsystem was finalized!", false);
 }
 
 HRESULT CInput::Configure(E_INPUT_CONFIGURATION_FLAGS flags)
 {
-	_exclusive = (flags & E_INPUT_CONFIGURATION_FLAGS::ICF_EXCLUSIVE) != 0;
-	_hideCursor = (flags & E_INPUT_CONFIGURATION_FLAGS::ICF_HIDE_CURSOR) != 0;
-	_curAlwaysInCenter = (flags & E_INPUT_CONFIGURATION_FLAGS::ICF_ALWAYS_IN_CENTER) != 0;
+	_exclusive = (flags & ICF_EXCLUSIVE) != 0;
+	_hideCursor = (flags & ICF_HIDE_CURSOR) != 0;
+	_curAlwaysInCenter = (flags & ICF_ALWAYS_IN_CENTER) != 0;
 
 	if (_exclusive)
 		_ClipCursor();
@@ -46,6 +53,13 @@ HRESULT CInput::Configure(E_INPUT_CONFIGURATION_FLAGS flags)
 		ShowCursor(FALSE);
 	else
 		ShowCursor(TRUE);
+
+	if (_curAlwaysInCenter)
+	{
+		_UpdateCenterCoord();
+		::SetCursorPos(_centerX, _centerY);
+	}
+		
 
 	return S_OK;
 }
@@ -69,13 +83,24 @@ void CInput::_ClipCursor()
 	ClipCursor(&rc);
 }
 
+void CInput::_UpdateCenterCoord()
+{
+	int32 left, right, top, bottom;
+	_pCore->GetMainWindow()->GetClientRect(left, right, top, bottom);
 
-void CInput::_s_MsgProc(const TGE::TWindowMessage& msg, void *pParam)
+	POINT center = { left + (right - left) / 2, top + (bottom - top) / 2 };
+	::ScreenToClient(_hWnd, &center);
+
+	_centerX = center.x;
+	_centerY = center.y;
+}
+
+void CInput::_s_MsgProc(const TWindowMessage& msg, void *pParam)
 {
 	((CInput*)pParam)->_MsgProc(msg);
 }
 
-void CInput::_MsgProc(const TGE::TWindowMessage& msg)
+void CInput::_MsgProc(const TWindowMessage& msg)
 {
 	switch (msg.messageType)
 	{
@@ -87,6 +112,7 @@ void CInput::_MsgProc(const TGE::TWindowMessage& msg)
 			_ClipCursor();
 
 		break;
+	
 	case(WMT_DEACTIVATED) :
 		if (!_focused)
 			break;
@@ -100,12 +126,20 @@ void CInput::_MsgProc(const TGE::TWindowMessage& msg)
 		_mouseState.mButtonPressed = false;
 
 		break;
+	
+	case(WMT_MOVE) :
+		if (_curAlwaysInCenter)
+			_UpdateCenterCoord();
+		break;
+	
 	case(WMT_KEY_DOWN) :
 		_keys[msg.param1] = true;
 		break;
+	
 	case(WMT_KEY_UP) :
 		_keys[msg.param1] = false;
 		break;
+	
 	case(WMT_MOUSE_DOWN) :
 		if (msg.param1 == 0)
 			_mouseState.lButtonPressed = true;
@@ -115,6 +149,7 @@ void CInput::_MsgProc(const TGE::TWindowMessage& msg)
 			else
 				_mouseState.mButtonPressed = true;
 		break;
+	
 	case(WMT_MOUSE_UP) :
 		if (msg.param1 == 0)
 			_mouseState.lButtonPressed = false;
@@ -124,19 +159,36 @@ void CInput::_MsgProc(const TGE::TWindowMessage& msg)
 			else
 				_mouseState.mButtonPressed = false;
 		break;
+	
 	case(WMT_MOUSE_WHEEL) :
 		_mouseState.deltaWheel = msg.param1;
 		break;
 	case(WMT_MOUSE_MOVE) :
-		if (_curAlwaysInCenter)
-		{
-			_mouseState.deltaX = msg.param1 - _mouseState.X;
-			_mouseState.deltaY = msg.param2 - _mouseState.Y;
-		}
 		_mouseState.X = msg.param1;
 		_mouseState.Y = msg.param2;
 		break;
 	default:
 		break;
 	}
+}
+
+void CInput::_Process()
+{
+	if (_curAlwaysInCenter)
+	{
+		_mouseState.deltaX = _mouseState.X - _centerX;
+		_mouseState.deltaY = _mouseState.Y - _centerY;
+		_mouseState.X = _centerX;
+		_mouseState.Y = _centerY;
+
+		POINT center = { _centerX, _centerY };
+		::ClientToScreen(_hWnd, &center);
+		
+		::SetCursorPos(center.x, center.y);
+	}
+}
+
+void CInput::_s_Process(void *pParam)
+{
+	((CInput*)pParam)->_Process();
 }

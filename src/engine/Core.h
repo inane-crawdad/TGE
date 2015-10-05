@@ -29,10 +29,10 @@ class CCore : public ICore
 	~CCore();
 
 	void _MLoop();
-	void _MsgProc(const TGE::TWindowMessage& msg);
+	void _MsgProc(const TWindowMessage& msg);
 
 	static void CALLBACK _s_MLoop(void *pParam);
-	static void CALLBACK _s_MsgProc(const TGE::TWindowMessage& msg, void *pParam);
+	static void CALLBACK _s_MsgProc(const TWindowMessage& msg, void *pParam);
 
 	friend bool TGE::GetEngine(ICore *& pICore);
 	friend void TGE::FreeEngine();

@@ -271,7 +271,22 @@ HRESULT CMainWindow::ConfigureWindow(uint resX, uint resY, bool fullScreen)
 	RECT rc = { 0, 0, resX, resY };
 	AdjustWindowRectEx(&rc, style, FALSE, style_ex);
 
-	SetWindowPos(_hWnd, HWND_TOP, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_FRAMECHANGED);
+	int x_pos = 0, y_pos = 0;
+
+	if (!fullScreen)
+	{
+		uint resX, resY;
+		GetDisplaySize(resX, resY);
+
+		x_pos = (resX - (rc.right - rc.left)) / 2;
+		y_pos = (resY - (rc.bottom - rc.top)) / 2;
+
+		if (x_pos < 0) x_pos = 0;
+		if (y_pos < 0) y_pos = 0;
+	}
+
+	::SetWindowPos(_hWnd, HWND_TOP, x_pos, y_pos, rc.right - rc.left, rc.bottom - rc.top, SWP_FRAMECHANGED);
+	::SetCursorPos(x_pos + (rc.right - rc.left) / 2, y_pos + (rc.bottom - rc.top) / 2);
 
 	SetForegroundWindow(_hWnd);
 
@@ -310,6 +325,12 @@ HRESULT CMainWindow::GetClientRect(int32 &left, int32 &right, int32 &top, int32 
 	return S_OK;
 }
 
+HRESULT CMainWindow::GetWindowHandle(WindowHandle &winHandle)
+{
+	winHandle = _hWnd;
+	return S_OK;
+}
+
 HRESULT CMainWindow::BeginMainLoop()
 {
 	return _BeginMainLoop() != -1 ? S_OK : E_FAIL;
@@ -334,10 +355,3 @@ HRESULT CMainWindow::Free()
 	delete this;
 	return S_OK;
 }
-
-//void CMainWindow::_OnResizeWindow(void)
-//{
-//	RECT rect;
-//	GetClientRect(_hWnd, &rect);
-//	glViewport(0, 0, rect.right, rect.bottom);
-//}

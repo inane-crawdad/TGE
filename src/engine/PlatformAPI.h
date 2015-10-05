@@ -8,9 +8,10 @@ class IMainWindow
 {
 public:
 	virtual HRESULT InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *msgProcDelegate) = 0;
-	virtual HRESULT ConfigureWindow(TGE::uint resX, TGE::uint resY, bool fullScreen) = 0;
+	virtual HRESULT ConfigureWindow(uint resX, uint resY, bool fullScreen) = 0;
 	virtual HRESULT SetCaption(const char *pCaption) = 0;
 	virtual HRESULT GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom) = 0;
+	virtual HRESULT GetWindowHandle(WindowHandle &winHandle) = 0;
 	virtual HRESULT BeginMainLoop() = 0;
 	virtual HRESULT KillWindow() = 0;
 	virtual HRESULT Free() = 0;
@@ -18,13 +19,13 @@ public:
 
 struct TSysTime
 {
-	TGE::uint16 year;
-	TGE::uint16 month;
-	TGE::uint16 day;
-	TGE::uint16 hour;
-	TGE::uint16 minute;
-	TGE::uint16 second;
-	TGE::uint16 milliSecond;
+	uint16 year;
+	uint16 month;
+	uint16 day;
+	uint16 hour;
+	uint16 minute;
+	uint16 second;
+	uint16 milliSecond;
 };
 
 #ifdef PLATFORM_WINDOWS
@@ -36,6 +37,7 @@ void EngMsgToWinAPIMsg(const TGE::TWindowMessage &engMsg, UINT &Msg, WPARAM &wPa
 
 uint64 GetPerfTimer();
 void GetLocalSysTime(TSysTime &time);
+void GetDisplaySize(uint &width, uint &height);
 void Terminate();
 
 

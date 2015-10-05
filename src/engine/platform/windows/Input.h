@@ -9,7 +9,7 @@ class CCore;
 class CInput : public IInput
 {
 	CCore			*_pCore;
-
+	HWND			_hWnd;
 	bool			_focused,
 					_exclusive,
 					_hideCursor,
@@ -19,10 +19,17 @@ class CInput : public IInput
 
 	TMouseState		_mouseState;
 
-	void _ClipCursor();
+	int				_centerX,
+					_centerY;
 
-	void _MsgProc(const TGE::TWindowMessage& msg);
-	static void CALLBACK _s_MsgProc(const TGE::TWindowMessage& msg, void *pParam);
+	void _ClipCursor();
+	void _UpdateCenterCoord();
+
+	void _MsgProc(const TWindowMessage& msg);
+	static void CALLBACK _s_MsgProc(const TWindowMessage& msg, void *pParam);
+
+	void _Process();
+	static void CALLBACK _s_Process(void *pParam);
 
 	CInput(const CInput&);
 	CInput& operator=(const CInput&);

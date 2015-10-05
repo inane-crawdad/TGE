@@ -28,6 +28,14 @@
 #define FAILED(hr) (((HRESULT)(hr)) < 0)
 #endif
 
+#ifdef PLATFORM_WINDOWS
+
+typedef HWND WindowHandle;
+
+#else
+
+#endif
+
 namespace TGE
 {
 	//signed//
@@ -63,6 +71,7 @@ namespace TGE
 		WMT_REDRAW,
 		WMT_ACTIVATED,
 		WMT_DEACTIVATED,
+		WMT_MOVE,
 		WMT_KEY_DOWN,
 		WMT_KEY_UP,
 		WMT_MOUSE_MOVE,

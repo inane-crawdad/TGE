@@ -10,11 +10,12 @@ class CInput : public IInput
 {
 	CCore			*_pCore;
 
-	bool			_exclusive;
-	bool			_hideCursor;
-	bool			_curAlwaysInCenter;
+	bool			_focused,
+					_exclusive,
+					_hideCursor,
+					_curAlwaysInCenter,
 
-	bool			_keys[256];
+					_keys[256];
 
 	TMouseState		_mouseState;
 

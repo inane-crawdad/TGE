@@ -79,6 +79,27 @@ void CInput::_MsgProc(const TGE::TWindowMessage& msg)
 {
 	switch (msg.messageType)
 	{
+	case(WMT_ACTIVATED) :
+		if (_focused)
+			break;
+		_focused = true;
+		if (_exclusive)
+			_ClipCursor();
+
+		break;
+	case(WMT_DEACTIVATED) :
+		if (!_focused)
+			break;
+		_focused = false;
+		if (_exclusive)
+			ClipCursor(NULL);
+
+		::ZeroMemory(_keys, 256);
+		_mouseState.lButtonPressed = false;
+		_mouseState.rButtonPressed = false;
+		_mouseState.mButtonPressed = false;
+
+		break;
 	case(WMT_KEY_DOWN) :
 		_keys[msg.param1] = true;
 		break;

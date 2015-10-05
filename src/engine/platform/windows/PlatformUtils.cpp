@@ -13,6 +13,12 @@ TWindowMessage WinAPIMsgToEngMsg(UINT Msg, WPARAM wParam, LPARAM lParam)
 	case(WM_PAINT) :
 		return TGE::TWindowMessage(TGE::E_WINDOW_MESSAGE_TYPE::WMT_REDRAW);
 		break;
+	case(WM_SETFOCUS) :
+		return TGE::TWindowMessage(TGE::E_WINDOW_MESSAGE_TYPE::WMT_ACTIVATED);
+		break;
+	case(WM_KILLFOCUS) :
+		return TGE::TWindowMessage(TGE::E_WINDOW_MESSAGE_TYPE::WMT_DEACTIVATED);
+		break;
 	case(WM_KEYDOWN) :
 		return TGE::TWindowMessage(TGE::E_WINDOW_MESSAGE_TYPE::WMT_KEY_DOWN, ASCIIKeyToEngKey((TGE::uchar)wParam));
 		break;

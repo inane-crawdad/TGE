@@ -22,6 +22,8 @@ class CInput : public IInput
 	int				_centerX,
 					_centerY;
 
+	int				_oldMouseX, _oldMouseY;
+
 	void _ClipCursor();
 	void _UpdateCenterCoord();
 

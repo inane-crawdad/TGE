@@ -7,7 +7,9 @@ _exclusive(false),
 _hideCursor(false),
 _curAlwaysInCenter(false),
 _centerX(0),
-_centerY(0)
+_centerY(0),
+_oldMouseX(0),
+_oldMouseY(0)
 {
 	_mouseState.X = 0;
 	_mouseState.Y = 0;
@@ -24,6 +26,12 @@ _centerY(0)
 
 	_pCore->pDMessageProc()->Add(_s_MsgProc, this);
 	_pCore->AddFunction(FT_PROCESS, _s_Process, this);
+
+	POINT curPos;
+	::GetCursorPos(&curPos);
+	::ScreenToClient(_hWnd, &curPos);
+	_oldMouseX = curPos.x;
+	_oldMouseY = curPos.y;
 
 	_pCore->AddToLog("Input subsystem was initialized!", false);
 }
@@ -185,6 +193,13 @@ void CInput::_Process()
 		::ClientToScreen(_hWnd, &center);
 		
 		::SetCursorPos(center.x, center.y);
+	}
+	else
+	{
+		_mouseState.deltaX = _mouseState.X - _oldMouseX;
+		_mouseState.deltaY = _mouseState.Y - _oldMouseY;
+		_oldMouseX = _mouseState.X;
+		_oldMouseY = _mouseState.Y;
 	}
 }
 

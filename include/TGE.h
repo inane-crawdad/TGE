@@ -36,6 +36,8 @@ typedef HWND WindowHandle;
 
 #endif
 
+#include "TGE_CommonTypes.h"
+
 namespace TGE
 {
 	//signed//

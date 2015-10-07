@@ -6,7 +6,7 @@
 
 class CCore;
 
-class CInput : public IInput
+class CInput : public IInput, private CUncopyable
 {
 	CCore			*_pCore;
 	HWND			_hWnd;

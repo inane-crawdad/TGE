@@ -3,7 +3,7 @@
 
 #include "..\..\Common.h"
 
-class CMainWindow : public IMainWindow
+class CMainWindow : public IMainWindow, private CUncopyable
 {
 	ICore				*_pCore;
 

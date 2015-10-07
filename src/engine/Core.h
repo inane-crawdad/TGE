@@ -5,7 +5,7 @@
 
 class CInput;
 
-class CCore : public ICore
+class CCore : public ICore, private CUncopyable
 {
 	TProcDelegate		_delProcess,
 						_delRender,
@@ -24,8 +24,6 @@ class CCore : public ICore
 	uint64				_oldTime;
 
 	CCore();
-	CCore(const CCore&){}
-	CCore& operator=(const CCore&){}
 	~CCore();
 
 	void _MLoop();

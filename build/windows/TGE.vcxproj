@@ -91,6 +91,7 @@
     <ClCompile Include="..\..\src\engine\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\TGE_CommonTypes.h" />
     <ClInclude Include="..\..\src\engine\Common.h" />
     <ClInclude Include="..\..\include\TGE.h" />
     <ClInclude Include="..\..\src\engine\Core.h" />

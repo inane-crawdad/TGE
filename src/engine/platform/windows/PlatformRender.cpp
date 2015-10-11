@@ -128,7 +128,7 @@ HRESULT CPlatformRender::Initialize(const TWindowParams &winParams)
 	glGetIntegerv(GL_MAJOR_VERSION, &OpenGLVersion[0]);
 	glGetIntegerv(GL_MINOR_VERSION, &OpenGLVersion[1]);
 
-	if (OpenGLVersion[0] < 3 || OpenGLVersion[1] < 3)
+	if (OpenGLVersion[0] < 3 || (OpenGLVersion[0] == 3 && OpenGLVersion[1] < 3))
 	{
 		_pCore->AddToLog("Need graphic card supporting OpenGL at least 3.3 version", false);
 		return E_ABORT;

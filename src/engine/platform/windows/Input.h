@@ -2,9 +2,6 @@
 #define _INPUT_H_
 
 #include "..\..\Common.h"
-#include "..\..\Core.h"
-
-class CCore;
 
 class CInput : public IInput, private CUncopyable
 {
@@ -19,10 +16,9 @@ class CInput : public IInput, private CUncopyable
 
 	TMouseState		_mouseState;
 
-	int				_centerX,
-					_centerY;
+	int				_centerX, _centerY; // center of client rect in client coord system
 
-	int				_oldMouseX, _oldMouseY;
+	int				_oldMouseX, _oldMouseY; // in client coord system
 
 	void _ClipCursor();
 	void _UpdateCenterCoord();
@@ -33,9 +29,6 @@ class CInput : public IInput, private CUncopyable
 	void _Process();
 	static void CALLBACK _s_Process(void *pParam);
 
-	CInput(const CInput&);
-	CInput& operator=(const CInput&);
-
 public:
 
 	CInput(CCore *pCore);
@@ -44,6 +37,8 @@ public:
 	HRESULT CALLBACK Configure(E_INPUT_CONFIGURATION_FLAGS flags = ICF_DEFAULT) override final;
 	HRESULT CALLBACK GetKey(E_KEYBOARD_KEY_CODES eKey, bool &isPressed) override final;
 	HRESULT CALLBACK GetMouseState(TMouseState& mouseState) override final;
+
+	HRESULT CALLBACK GetSubsystemType(E_ENGINE_SUB_SYSTEM &subsystemType) override final;
 };
 
 #endif

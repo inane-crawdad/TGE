@@ -85,8 +85,10 @@
     <ClCompile Include="..\..\src\engine\Core.cpp" />
     <ClCompile Include="..\..\src\engine\externs\glew.c" />
     <ClCompile Include="..\..\src\engine\main.cpp" />
+    <ClCompile Include="..\..\src\engine\platform\PlatformSubsystemManager.cpp" />
     <ClCompile Include="..\..\src\engine\platform\windows\Input.cpp" />
     <ClCompile Include="..\..\src\engine\platform\windows\MainWindow.cpp" />
+    <ClCompile Include="..\..\src\engine\platform\windows\PlatformRender.cpp" />
     <ClCompile Include="..\..\src\engine\platform\windows\PlatformUtils.cpp" />
     <ClCompile Include="..\..\src\engine\Utils.cpp" />
   </ItemGroup>
@@ -98,9 +100,11 @@
     <ClInclude Include="..\..\src\engine\externs\GL\glew.h" />
     <ClInclude Include="..\..\src\engine\externs\GL\wglew.h" />
     <ClInclude Include="..\..\src\engine\FuncDelegate.h" />
-    <ClInclude Include="..\..\src\engine\PlatformAPI.h" />
+    <ClInclude Include="..\..\src\engine\platform\PlatformAPI.h" />
+    <ClInclude Include="..\..\src\engine\platform\PlatformSubsystemManager.h" />
     <ClInclude Include="..\..\src\engine\platform\windows\Input.h" />
     <ClInclude Include="..\..\src\engine\platform\windows\MainWindow.h" />
+    <ClInclude Include="..\..\src\engine\platform\windows\PlatformRender.h" />
     <ClInclude Include="..\..\src\engine\Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

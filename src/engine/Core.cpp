@@ -1,7 +1,6 @@
 #include "Core.h"
 
 #ifdef PLATFORM_WINDOWS
-#include "platform\windows\MainWindow.h"
 #include "platform\windows\Input.h"
 #endif
 
@@ -11,7 +10,14 @@ bool TGE::GetEngine(ICore *& pICore)
 {
 	if (pCore == nullptr)
 	{
-		pCore = new CCore();
+		try
+		{
+			pCore = new CCore();
+		}
+		catch (...)
+		{
+			return false;
+		}
 		pICore = (ICore *&)pCore;
 	}
 	else
@@ -32,17 +38,18 @@ void TGE::FreeEngine()
 CCore::CCore():
 _doExit(false),
 _processInterval(16),
-_pInput(nullptr)
+_pMainWindow(nullptr),
+_pInput(nullptr),
+_pPlatformRender(nullptr)
 {
 	_delMLoop.Add(_s_MLoop, this);
 	_delMsgProc.Add(_s_MsgProc, this);
-
-	_pMainWindow = new CMainWindow(this);
 }
 
 CCore::~CCore()
 {
 	_pMainWindow->Free();
+	_pPlatformRender->Free();
 
 	if (_logFile.is_open())
 	{
@@ -51,8 +58,14 @@ CCore::~CCore()
 	}
 }
 
-HRESULT CALLBACK CCore::InitializeEngine(uint resX, uint resY, const char *appName, E_ENGINE_INIT_FLAGS initFlags)
+HRESULT CALLBACK CCore::InitializeEngine(const char *appName, const TWindowParams &winParams, E_ENGINE_INIT_FLAGS initFlags)
 {
+	if (FAILED(CPlatformSubsystemManager::Instance().GetPlatformSubsystem(
+		this,
+		PSST_MAIN_WINDOW,
+		(IPlatformSubsystem*&)_pMainWindow)))
+		return E_ABORT;
+
 	if (!(initFlags & EIF_NO_LOG))
 	{
 		_logFile.setf(std::ios_base::adjustfield);
@@ -69,10 +82,16 @@ HRESULT CALLBACK CCore::InitializeEngine(uint resX, uint resY, const char *appNa
 	{
 		_pMainWindow->SetCaption(appName);
 
-		if ((EIF_FULLSCREEN & initFlags) && (EIF_NATIVE_RESOLUTION & initFlags))
-			GetDisplaySize(resX, resY);
+		if (FAILED(_pMainWindow->ConfigureWindow(winParams)))
+			return E_ABORT;
 
-		if (FAILED(_pMainWindow->ConfigureWindow(resX, resY, (EIF_FULLSCREEN & initFlags))))
+		if (FAILED(CPlatformSubsystemManager::Instance().GetPlatformSubsystem(
+			this,
+			PSST_RENDER,
+			(IPlatformSubsystem*&)_pPlatformRender)))
+			return E_ABORT;
+
+		if (FAILED(_pPlatformRender->Initialize(winParams)))
 			return E_ABORT;
 
 		_pInput = new CInput(this);
@@ -228,12 +247,22 @@ void CCore::_MsgProc(const TWindowMessage& msg)
 	}
 }
 
-HRESULT CCore::GetInput(IInput *&pInput)
+HRESULT CCore::GetEngineSubsystem(E_ENGINE_SUB_SYSTEM engSubsystemType, IEngineSubsystem *&pEngSubsystem)
 {
-	if (_pInput == nullptr)
-		return E_ABORT;
+	switch (engSubsystemType)
+	{
+	case ESS_RENDER:
+		break;
+	case ESS_INPUT:
+		if (_pInput == nullptr)
+			return E_ABORT;
+		pEngSubsystem = (IEngineSubsystem *)_pInput;
+		break;
+	default:
+		return E_INVALIDARG;
+		break;
+	}
 
-	pInput = _pInput;
 	return S_OK;
 }
 

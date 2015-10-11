@@ -4,8 +4,11 @@
 #include "TGE.h"
 using namespace TGE;
 
+class CCore;
+
 #include "FuncDelegate.h"
-#include "PlatformAPI.h"
+#include "platform\PlatformAPI.h"
+#include "platform\PlatformSubsystemManager.h"
 #include "Utils.h"
 #include "GL/glew.h"
 
@@ -17,5 +20,8 @@ using namespace TGE;
 #include <iostream>
 #include <fstream>
 
+
+
+#include "Core.h"
 
 #endif // _COMMON_H_

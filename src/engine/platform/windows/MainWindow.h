@@ -5,7 +5,7 @@
 
 class CMainWindow : public IMainWindow, private CUncopyable
 {
-	ICore				*_pCore;
+	CCore				*_pCore;
 
 	HINSTANCE			_hInst;
 	HWND				_hWnd;
@@ -21,20 +21,21 @@ class CMainWindow : public IMainWindow, private CUncopyable
 
 	int CMainWindow::_BeginMainLoop();
 
-	CMainWindow(const CMainWindow&);
-	CMainWindow& operator=(const CMainWindow&);
 public:
-	CMainWindow(ICore *pCore);
+	CMainWindow(CCore *pCore);
 	~CMainWindow();
 
 	HRESULT InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *msgProcDelegate) override final;
-	HRESULT ConfigureWindow(uint resX, uint resY, bool fullScreen) override final;
+	HRESULT ConfigureWindow(const TGE::TWindowParams &winParams) override final;
 	HRESULT SetCaption(const char *pCaption) override final;
 	HRESULT GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom) override final;
 	HRESULT GetWindowHandle(WindowHandle &winHandle) override final;
+	HRESULT GetWindowDrawContext(TGE::WindowDrawContext &dcHandle) override final;
 	HRESULT BeginMainLoop() override final;
 	HRESULT KillWindow() override final;
 	HRESULT Free() override final;
+
+	HRESULT GetPlatformSubsystemType(E_PLATFORM_SUB_SYSTEM_TYPE &pst) override final;
 };
 
 

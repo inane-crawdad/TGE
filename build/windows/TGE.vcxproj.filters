@@ -8,12 +8,6 @@
     <ClInclude Include="..\..\src\engine\FuncDelegate.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\engine\PlatformAPI.h">
-      <Filter>Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\engine\platform\windows\MainWindow.h">
-      <Filter>Platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\engine\externs\GL\glew.h">
       <Filter>Externs\Glew\GL</Filter>
     </ClInclude>
@@ -30,6 +24,18 @@
     <ClInclude Include="..\..\include\TGE_CommonTypes.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\PlatformAPI.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\PlatformSubsystemManager.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\windows\MainWindow.h">
+      <Filter>Platform\PlatformSubsystems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\windows\PlatformRender.h">
+      <Filter>Platform\PlatformSubsystems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\engine\main.cpp" />
@@ -39,15 +45,21 @@
     <ClCompile Include="..\..\src\engine\platform\windows\PlatformUtils.cpp">
       <Filter>Platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\engine\platform\windows\MainWindow.cpp">
-      <Filter>Platform</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\engine\externs\glew.c">
       <Filter>Externs\Glew</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\engine\Utils.cpp" />
     <ClCompile Include="..\..\src\engine\platform\windows\Input.cpp">
       <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\PlatformSubsystemManager.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\windows\MainWindow.cpp">
+      <Filter>Platform\PlatformSubsystems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\windows\PlatformRender.cpp">
+      <Filter>Platform\PlatformSubsystems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +86,9 @@
     </Filter>
     <Filter Include="Include">
       <UniqueIdentifier>{65dfc86e-e275-4945-abc5-0826927529d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\PlatformSubsystems">
+      <UniqueIdentifier>{ed706b06-59e8-4b8b-8b23-6952f6f76cf1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

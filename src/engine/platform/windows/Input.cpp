@@ -207,3 +207,9 @@ void CInput::_s_Process(void *pParam)
 {
 	((CInput*)pParam)->_Process();
 }
+
+HRESULT CInput::GetSubsystemType(E_ENGINE_SUB_SYSTEM &subsystemType)
+{
+	subsystemType = ESS_INPUT;
+	return S_OK;
+}

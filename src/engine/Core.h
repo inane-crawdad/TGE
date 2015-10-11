@@ -18,6 +18,8 @@ class CCore : public ICore, private CUncopyable
 	IMainWindow			*_pMainWindow;
 	CInput				*_pInput;
 
+	IPlatformRender		*_pPlatformRender;
+
 	bool				_doExit;
 
 	uint				_processInterval;
@@ -40,13 +42,13 @@ public:
 	TMsgProcDelegate* pDMessageProc() { return &_delMsgProc; }
 	IMainWindow* GetMainWindow() const;
 
-	HRESULT CALLBACK InitializeEngine(uint resX, uint resY, const char *appName, E_ENGINE_INIT_FLAGS initFlags) override final;
+	HRESULT CALLBACK InitializeEngine(const char *appName, const TWindowParams &winParams, E_ENGINE_INIT_FLAGS initFlags) override final;
 	HRESULT CALLBACK QuitEngine() override final;
 	HRESULT CALLBACK AddFunction(E_FUNC_TYPE funcType, void(CALLBACK *func)(void *pParam), void *pParam = nullptr) override final;
 	HRESULT CALLBACK RemoveFunction(E_FUNC_TYPE funcType, void(CALLBACK *func)(void *pParam), void *pParam = nullptr) override final;
 	HRESULT CALLBACK AddToLog(const char *txt, bool isError) override final;
 
-	HRESULT CALLBACK GetInput(IInput *&pInput) override final;
+	HRESULT CALLBACK GetEngineSubsystem(E_ENGINE_SUB_SYSTEM engSubsystemType, IEngineSubsystem *&pEngSubsystem) override final;
 };
 
 #endif //_CORE_H_

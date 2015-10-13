@@ -15,10 +15,11 @@ class CCore : public ICore, private CUncopyable
 	TMsgProcDelegate	_delMsgProc;
 	std::fstream		_logFile;
 
-	IMainWindow			*_pMainWindow;
 	CInput				*_pInput;
 
+	IMainWindow			*_pMainWindow;
 	IPlatformRender		*_pPlatformRender;
+	IPlatformInput		*_pPlatformInput;
 
 	bool				_doExit;
 

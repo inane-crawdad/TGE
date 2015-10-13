@@ -3,12 +3,14 @@
 #ifdef PLATFORM_WINDOWS
 #include "windows\MainWindow.h"
 #include "windows\PlatformRender.h"
+#include "windows\PlatformInput.h"
 #endif
 
 HRESULT CPlatformSubsystemManager::GetPlatformSubsystem(TGE::ICore *pCore, E_PLATFORM_SUB_SYSTEM_TYPE type, IPlatformSubsystem *&pPSS)
 {
 	static CMainWindow *s_pMainWindow = nullptr;
 	static CPlatformRender *s_pPlatformRender = nullptr;
+	static CPlatformInput *s_pPlatformInput = nullptr;
 
 	switch (type)
 	{
@@ -22,6 +24,13 @@ HRESULT CPlatformSubsystemManager::GetPlatformSubsystem(TGE::ICore *pCore, E_PLA
 			pPSS = s_pMainWindow;
 		break;
 	case PSST_INPUT:
+		if (s_pPlatformInput == nullptr)
+		{
+			s_pPlatformInput = new CPlatformInput(static_cast<CCore*>(pCore));
+			pPSS = s_pPlatformInput;
+		}
+		else
+			pPSS = s_pPlatformInput;
 		break;
 	case PSST_RENDER:
 		if (s_pPlatformRender == nullptr)

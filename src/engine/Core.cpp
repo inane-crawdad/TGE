@@ -1,7 +1,7 @@
 #include "Core.h"
 
 #ifdef PLATFORM_WINDOWS
-#include "platform\windows\Input.h"
+#include "Input.h"
 #endif
 
 CCore *pCore = nullptr;
@@ -50,6 +50,7 @@ CCore::~CCore()
 {
 	_pMainWindow->Free();
 	_pPlatformRender->Free();
+	_pPlatformInput->Free();
 
 	if (_logFile.is_open())
 	{
@@ -92,6 +93,12 @@ HRESULT CALLBACK CCore::InitializeEngine(const char *appName, const TWindowParam
 			return E_ABORT;
 
 		if (FAILED(_pPlatformRender->Initialize(winParams)))
+			return E_ABORT;
+
+		if (FAILED(CPlatformSubsystemManager::Instance().GetPlatformSubsystem(
+			this,
+			PSST_INPUT,
+			(IPlatformSubsystem*&)_pPlatformInput)))
 			return E_ABORT;
 
 		_pInput = new CInput(this);

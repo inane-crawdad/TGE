@@ -41,10 +41,11 @@ public:
 class IPlatformInput : public IPlatformSubsystem
 {
 public:
-	virtual HRESULT GetCursorPos() = 0;
-	virtual HRESULT SetCursorPos() = 0;
+	virtual HRESULT GetCursorPos(int &x, int &y) = 0;
+	virtual HRESULT SetCursorPos(int x, int y) = 0;
 	virtual HRESULT ShowCursor(bool show) = 0;
-	virtual HRESULT ClipCursor() = 0;
+	virtual HRESULT ClipCursor(TGE::int32 left, TGE::int32 right, TGE::int32 top, TGE::int32 bottom) = 0;
+	virtual HRESULT Free() = 0;
 };
 
 struct TSysTime

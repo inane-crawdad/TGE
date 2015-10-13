@@ -1,7 +1,7 @@
 #ifndef _INPUT_H_
 #define _INPUT_H_
 
-#include "..\..\Common.h"
+#include "Common.h"
 
 class CInput : public IInput, private CUncopyable
 {

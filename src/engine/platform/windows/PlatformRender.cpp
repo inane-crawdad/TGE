@@ -16,6 +16,8 @@ CPlatformRender::~CPlatformRender()
 		if (!wglDeleteContext(_hGLRC))
 			_pCore->AddToLog("Can't properly delete render context", false);
 	}
+
+	_pCore->AddToLog("Platform render subsystem was finalized!", false);
 }
 
 HRESULT CPlatformRender::Initialize(const TWindowParams &winParams)
@@ -146,6 +148,8 @@ HRESULT CPlatformRender::Initialize(const TWindowParams &winParams)
 			wglSwapIntervalEXT(1);
 		else
 			_pCore->AddToLog("VSync is not supported", false);
+
+	_pCore->AddToLog("Platform render subsystem was initialized!", false);
 
 	return S_OK;
 }

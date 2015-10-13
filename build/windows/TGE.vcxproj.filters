@@ -15,9 +15,6 @@
       <Filter>Externs\Glew\GL</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\engine\Utils.h" />
-    <ClInclude Include="..\..\src\engine\platform\windows\Input.h">
-      <Filter>Input</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\TGE.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -36,6 +33,12 @@
     <ClInclude Include="..\..\src\engine\platform\windows\PlatformRender.h">
       <Filter>Platform\PlatformSubsystems</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\windows\PlatformInput.h">
+      <Filter>Platform\PlatformSubsystems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\engine\main.cpp" />
@@ -49,9 +52,6 @@
       <Filter>Externs\Glew</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\engine\Utils.cpp" />
-    <ClCompile Include="..\..\src\engine\platform\windows\Input.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\engine\platform\PlatformSubsystemManager.cpp">
       <Filter>Platform</Filter>
     </ClCompile>
@@ -60,6 +60,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\engine\platform\windows\PlatformRender.cpp">
       <Filter>Platform\PlatformSubsystems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\windows\PlatformInput.cpp">
+      <Filter>Platform\PlatformSubsystems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\Input.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

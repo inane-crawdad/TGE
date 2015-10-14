@@ -6,6 +6,7 @@
 class CInput : public IInput, private CUncopyable
 {
 	CCore			*_pCore;
+	IPlatformInput	*_pPlatformInput;
 	HWND			_hWnd;
 	bool			_focused,
 					_exclusive,
@@ -21,7 +22,6 @@ class CInput : public IInput, private CUncopyable
 	int				_oldMouseX, _oldMouseY; // in client coord system
 
 	void _ClipCursor();
-	void _UpdateCenterCoord();
 
 	void _MsgProc(const TWindowMessage& msg);
 	static void CALLBACK _s_MsgProc(const TWindowMessage& msg, void *pParam);

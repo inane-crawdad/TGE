@@ -5,8 +5,7 @@ CMainWindow::CMainWindow(CCore *pCore) :
 	_hInst(GetModuleHandle(NULL)),
 	_hWnd(NULL),
 	_hDC(NULL),
-	_hGLRC(NULL),
-	_msaaSamples(4u)
+	_hGLRC(NULL)
 {}
 
 CMainWindow::~CMainWindow()
@@ -207,7 +206,7 @@ HRESULT CMainWindow::GetWindowHandle(WindowHandle &winHandle)
 	return S_OK;
 }
 
-HRESULT CMainWindow::GetWindowDrawContext(TGE::WindowDrawContext &dcHandle)
+HRESULT CMainWindow::GetWindowDrawContext(WindowDrawContext &dcHandle)
 {
 	dcHandle = _hDC;
 	return S_OK;

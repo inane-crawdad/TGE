@@ -1,10 +1,9 @@
 #ifndef _TGE_COMMONTYPES_H_
 #define _TGE_COMMONTYPES_H_
 
-namespace TGE
-{
-
 #ifndef PLATFORM_WINDOWS
+typedef long int HRESULT;
+
 #define CALLBACK
 
 #define S_OK			0L
@@ -21,14 +20,8 @@ namespace TGE
 #define FAILED(hr) (((HRESULT)(hr)) < 0)
 #endif
 
-#ifdef PLATFORM_WINDOWS
-
-	typedef HWND WindowHandle;
-	typedef HDC WindowDrawContext;
-
-#else
-
-#endif
+namespace TGE
+{
 
 	//signed//
 	typedef short int			int16;
@@ -68,9 +61,12 @@ namespace TGE
 	enum E_WINDOW_MESSAGE_TYPE
 	{
 		WMT_UNKNOWN = 0,
+		WMT_CREATE,
+		WMT_RELEASED,
 		WMT_CLOSE,
 		WMT_DESTROY,
 		WMT_REDRAW,
+		WMT_RESIZE,
 		WMT_ACTIVATED,
 		WMT_DEACTIVATED,
 		WMT_MOVE,
@@ -79,7 +75,8 @@ namespace TGE
 		WMT_MOUSE_MOVE,
 		WMT_MOUSE_DOWN,
 		WMT_MOUSE_UP,
-		WMT_MOUSE_WHEEL
+		WMT_MOUSE_WHEEL,
+		WMT_TOUCH_EVENT
 	};
 
 	// abstraction above platform messages
@@ -94,13 +91,13 @@ namespace TGE
 		TWindowMessage(E_WINDOW_MESSAGE_TYPE msg, uint32 param1 = 0, uint32 param2 = 0, void *param3 = nullptr) :messageType(msg), param1(param1), param2(param2), pParam3(param3){}
 	};
 
-	enum E_MSAA_SAMPLES_COUNT
+	enum E_MSAA_SAMPLES_COUNT : uint8
 	{
-		MSC_NONE	= 0x00000000,
-		MSC_2X		= 0x00000001,
-		MSC_4X		= 0x00000002,
-		MSC_8X		= 0x00000004,
-		MSC_16X		= 0x00000008
+		MSC_NONE	= 0,
+		MSC_2X		= 1,
+		MSC_4X		= 1 << 1,
+		MSC_8X		= 1 << 2,
+		MSC_16X		= 1 << 3
 	};
 
 	struct TWindowParams
@@ -108,15 +105,16 @@ namespace TGE
 		uint width;
 		uint height;
 		bool fullScreen;
+		void *pParam;
 		bool vSync;
 		E_MSAA_SAMPLES_COUNT msaa_count;
 
-		TWindowParams() :width(320), height(240), fullScreen(false), vSync(false), msaa_count(MSC_NONE){}
-		TWindowParams(uint width, uint height, bool fullScreen, bool vSync = false, E_MSAA_SAMPLES_COUNT msaaCount = MSC_NONE):
-			width(width), height(height), fullScreen(fullScreen), vSync(vSync), msaa_count(msaaCount){}
+		TWindowParams() :width(320), height(240), fullScreen(false), pParam(nullptr), vSync(false), msaa_count(MSC_NONE){}
+		TWindowParams(uint width, uint height, bool fullScreen, void *pParam = nullptr, bool vSync = false, E_MSAA_SAMPLES_COUNT msaaCount = MSC_NONE):
+			width(width), height(height), fullScreen(fullScreen), pParam(pParam), vSync(vSync), msaa_count(msaaCount){}
 	};
 
-#ifdef PLATFORM_WINDOWS
+#ifdef TGE_DESKTOP
 
 	struct TMouseState
 	{

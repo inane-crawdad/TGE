@@ -1,8 +1,22 @@
 #ifndef _PLATFORM_API_
 #define _PLATFORM_API_
 
-#include "..\..\..\include\TGE.h"
-#include "..\FuncDelegate.h"
+#include "TGE.h"
+#include "../FuncDelegate.h"
+
+#ifdef PLATFORM_WINDOWS
+
+typedef HWND WindowHandle;
+typedef HDC WindowDrawContext;
+
+#elif defined(PLATFORM_ANDROID)
+
+typedef ANativeWindow* WindowHandle;
+// don't really need this
+typedef ANativeWindow* WindowDrawContext;
+//
+
+#endif
 
 enum E_PLATFORM_SUB_SYSTEM_TYPE
 {
@@ -13,6 +27,7 @@ enum E_PLATFORM_SUB_SYSTEM_TYPE
 
 class IPlatformSubsystem
 {
+public:
 	virtual HRESULT GetPlatformSubsystemType(E_PLATFORM_SUB_SYSTEM_TYPE &pst) = 0;
 };
 
@@ -23,8 +38,8 @@ public:
 	virtual HRESULT ConfigureWindow(const TGE::TWindowParams &winParams) = 0;
 	virtual HRESULT SetCaption(const char *pCaption) = 0;
 	virtual HRESULT GetClientRect(TGE::int32 &left, TGE::int32 &right, TGE::int32 &top, TGE::int32 &bottom) = 0;
-	virtual HRESULT GetWindowHandle(TGE::WindowHandle &winHandle) = 0;
-	virtual HRESULT GetWindowDrawContext(TGE::WindowDrawContext &dcHandle) = 0;
+	virtual HRESULT GetWindowHandle(WindowHandle &winHandle) = 0;
+	virtual HRESULT GetWindowDrawContext(WindowDrawContext &dcHandle) = 0;
 	virtual HRESULT BeginMainLoop() = 0;
 	virtual HRESULT KillWindow() = 0;
 	virtual HRESULT Free() = 0;
@@ -36,8 +51,11 @@ public:
 	virtual HRESULT Initialize(const TGE::TWindowParams &winParams) = 0;
 	virtual HRESULT Free() = 0;
 	virtual HRESULT MakeCurrent() = 0;
+	virtual HRESULT IsContextValid(bool &flag) = 0;
+	virtual HRESULT IsContextChanged(bool &flag) = 0;
 };
 
+#ifdef TGE_DESKTOP
 class IPlatformInput : public IPlatformSubsystem
 {
 public:
@@ -48,6 +66,13 @@ public:
 	virtual HRESULT ClipCursor(TGE::int32 left, TGE::int32 right, TGE::int32 top, TGE::int32 bottom) = 0;
 	virtual HRESULT Free() = 0;
 };
+#elif defined(TGE_MOBILE)
+class IPlatformInput : public IPlatformSubsystem
+{
+public:
+	virtual HRESULT Free() = 0;
+};
+#endif
 
 struct TSysTime
 {
@@ -62,9 +87,13 @@ struct TSysTime
 
 #ifdef PLATFORM_WINDOWS
 TGE::TWindowMessage WinAPIMsgToEngMsg(UINT Msg, WPARAM wParam, LPARAM lParam);
-void EngMsgToWinAPIMsg(const TGE::TWindowMessage &engMsg, UINT &Msg, WPARAM &wParam, LPARAM &lParam);
-#else
-
+#elif defined(PLATFORM_ANDROID)
+enum E_ANDROID_EVENT_TYPE
+{
+	AET_CMD = 0,
+	AET_INPUT
+};
+TGE::TWindowMessage AndroidMsgToEngMsg(E_ANDROID_EVENT_TYPE eventType, AInputEvent *event, int cmd);
 #endif
 
 TGE::uint64 GetPerfTimer();

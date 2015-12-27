@@ -1,7 +1,9 @@
 #include "Core.h"
 
 #ifdef PLATFORM_WINDOWS
-#include "Input.h"
+#include "DesktopInput/Input.h"
+#elif defined(PLATFORM_ANDROID)
+#include "MobileInput/Input.h"
 #endif
 
 CCore *pCore = nullptr;
@@ -18,10 +20,10 @@ bool TGE::GetEngine(ICore *& pICore)
 		{
 			return false;
 		}
-		pICore = (ICore *&)pCore;
+		pICore = pCore;
 	}
 	else
-		pICore = (ICore *&)pCore;
+		pICore = pCore;
 
 	return true;
 }
@@ -48,6 +50,8 @@ _pPlatformRender(nullptr)
 
 CCore::~CCore()
 {
+	delete _pInput;
+
 	_pMainWindow->Free();
 	_pPlatformRender->Free();
 	_pPlatformInput->Free();
@@ -66,7 +70,7 @@ HRESULT CALLBACK CCore::InitializeEngine(const char *appName, const TWindowParam
 		PSST_MAIN_WINDOW,
 		(IPlatformSubsystem*&)_pMainWindow)))
 		return E_ABORT;
-
+	
 	if (!(initFlags & EIF_NO_LOG))
 	{
 		_logFile.setf(std::ios_base::adjustfield);
@@ -79,44 +83,42 @@ HRESULT CALLBACK CCore::InitializeEngine(const char *appName, const TWindowParam
 		_logFile << "Log started at " << t.hour << "." << t.minute << "." << t.second << std::endl;
 	}
 
-	if (SUCCEEDED(_pMainWindow->InitWindow(&_delMLoop, &_delMsgProc)))
-	{
-		_pMainWindow->SetCaption(appName);
-
-		if (FAILED(_pMainWindow->ConfigureWindow(winParams)))
-			return E_ABORT;
-
-		if (FAILED(CPlatformSubsystemManager::Instance().GetPlatformSubsystem(
-			this,
-			PSST_RENDER,
-			(IPlatformSubsystem*&)_pPlatformRender)))
-			return E_ABORT;
-
-		if (FAILED(_pPlatformRender->Initialize(winParams)))
-			return E_ABORT;
-
-		if (FAILED(CPlatformSubsystemManager::Instance().GetPlatformSubsystem(
-			this,
-			PSST_INPUT,
-			(IPlatformSubsystem*&)_pPlatformInput)))
-			return E_ABORT;
-
-		_pInput = new CInput(this);
-
-		AddToLog("Engine initializing is done!", false);
-
-		if (!_delInit.IsEmpty())
-		{
-			AddToLog("Start user's init procedure", false);
-			_delInit.Invoke();
-			AddToLog("Done!", false);
-		}
-
-		_oldTime = GetPerfTimer() / 1000;
-		_pMainWindow->BeginMainLoop();
-	}
-	else
+	if (FAILED(_pMainWindow->InitWindow(&_delMLoop, &_delMsgProc)))
 		return E_ABORT;
+
+	_pMainWindow->SetCaption(appName);
+
+	if (FAILED(_pMainWindow->ConfigureWindow(winParams)))
+		return E_ABORT;
+
+	if (FAILED(CPlatformSubsystemManager::Instance().GetPlatformSubsystem(
+		this,
+		PSST_RENDER,
+		(IPlatformSubsystem*&)_pPlatformRender)))
+		return E_ABORT;
+
+	if (FAILED(_pPlatformRender->Initialize(winParams)))
+		return E_ABORT;
+
+	if (FAILED(CPlatformSubsystemManager::Instance().GetPlatformSubsystem(
+		this,
+		PSST_INPUT,
+		(IPlatformSubsystem*&)_pPlatformInput)))
+		return E_ABORT;
+
+	_pInput = new CInput(this);
+
+	AddToLog("Engine initializing is done!", false);
+
+	if (!_delInit.IsEmpty())
+	{
+		AddToLog("Start user's init procedure", false);
+		_delInit.Invoke();
+		AddToLog("Done!", false);
+	}
+
+	_oldTime = GetPerfTimer() / 1000;
+	_pMainWindow->BeginMainLoop();
 
 	return S_OK;
 }
@@ -188,6 +190,11 @@ HRESULT CALLBACK CCore::AddToLog(const char *txt, bool isError)
 			Terminate();
 		}
 	}
+#ifdef PLATFORM_ANDROID
+	__android_log_write(ANDROID_LOG_INFO, "TGE Core", txt);
+	if (isError)
+		Terminate();
+#endif
 	return S_OK;
 }
 
@@ -263,7 +270,7 @@ HRESULT CCore::GetEngineSubsystem(E_ENGINE_SUB_SYSTEM engSubsystemType, IEngineS
 	case ESS_INPUT:
 		if (_pInput == nullptr)
 			return E_ABORT;
-		pEngSubsystem = (IEngineSubsystem *)_pInput;
+		pEngSubsystem = _pInput;
 		break;
 	default:
 		return E_INVALIDARG;

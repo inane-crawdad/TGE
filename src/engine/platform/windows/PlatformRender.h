@@ -16,6 +16,8 @@ public:
 	HRESULT Initialize(const TWindowParams &winParams) override final;
 	HRESULT Free() override final;
 	HRESULT MakeCurrent() override final;
+	HRESULT IsContextValid(bool &flag) override final;
+	HRESULT IsContextChanged(bool &flag) override final;
 
 	HRESULT GetPlatformSubsystemType(E_PLATFORM_SUB_SYSTEM_TYPE &pst) override final;
 };

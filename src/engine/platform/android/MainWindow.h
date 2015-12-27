@@ -3,19 +3,20 @@
 
 #include "..\..\Common.h"
 
+class CPlatformRender;
+
 class CMainWindow : public IMainWindow, private CUncopyable
 {
 	CCore				*_pCore;
-
-	HINSTANCE			_hInst;
-	HWND				_hWnd;
-	HDC					_hDC;
-	HGLRC				_hGLRC;
+	android_app			*_app;
+	bool				_bHasFocus;
+	CPlatformRender		*_pPlatformRender;
 
 	TProcDelegate		*_mLoopDel;
 	TMsgProcDelegate	*_msgProcDel;
 
-	static LRESULT CALLBACK _s_WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	static int _s_HandleInput(android_app* app, AInputEvent *event);
+	static void _s_HandleCmd(android_app* app, int cmd);
 
 	int _BeginMainLoop();
 
@@ -24,7 +25,7 @@ public:
 	~CMainWindow();
 
 	HRESULT InitWindow(TProcDelegate *procDelegate, TMsgProcDelegate *msgProcDelegate) override final;
-	HRESULT ConfigureWindow(const TGE::TWindowParams &winParams) override final;
+	HRESULT ConfigureWindow(const TWindowParams &winParams) override final;
 	HRESULT SetCaption(const char *pCaption) override final;
 	HRESULT GetClientRect(int32 &left, int32 &right, int32 &top, int32 &bottom) override final;
 	HRESULT GetWindowHandle(WindowHandle &winHandle) override final;

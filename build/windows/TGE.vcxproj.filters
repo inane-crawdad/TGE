@@ -36,17 +36,26 @@
     <ClInclude Include="..\..\src\engine\platform\windows\PlatformInput.h">
       <Filter>Platform\PlatformSubsystems</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\engine\Input.h">
+    <ClInclude Include="..\..\src\engine\platform\android\MainWindow.h">
+      <Filter>Platform\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\android\PlatformInput.h">
+      <Filter>Platform\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\android\PlatformRender.h">
+      <Filter>Platform\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\DesktopInput\Input.h">
       <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\engine\MobileInput\Input.h">
+      <Filter>Platform\android</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\engine\main.cpp" />
     <ClCompile Include="..\..\src\engine\Core.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\engine\platform\windows\PlatformUtils.cpp">
-      <Filter>Platform</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\engine\externs\glew.c">
       <Filter>Externs\Glew</Filter>
@@ -64,8 +73,26 @@
     <ClCompile Include="..\..\src\engine\platform\windows\PlatformInput.cpp">
       <Filter>Platform\PlatformSubsystems</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\engine\Input.cpp">
+    <ClCompile Include="..\..\src\engine\platform\android\MainWindow.cpp">
+      <Filter>Platform\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\android\PlatformInput.cpp">
+      <Filter>Platform\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\android\PlatformRender.cpp">
+      <Filter>Platform\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\windows\PlatformUtils.cpp">
+      <Filter>Platform\PlatformSubsystems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\android\PlatformUtils.cpp">
+      <Filter>Platform\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\DesktopInput\Input.cpp">
       <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\MobileInput\Input.cpp">
+      <Filter>Platform\android</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +122,9 @@
     </Filter>
     <Filter Include="Platform\PlatformSubsystems">
       <UniqueIdentifier>{ed706b06-59e8-4b8b-8b23-6952f6f76cf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\android">
+      <UniqueIdentifier>{e820272a-623d-4cc2-a8ad-5a6adbc4ae2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

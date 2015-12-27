@@ -2,6 +2,7 @@
 
 using namespace TGE;
 
+#ifdef TGE_DESKTOP
 TGE::uchar EngKeyToASCIIKey(const TGE::uint8 key)
 {
 	switch (key)
@@ -236,3 +237,4 @@ TGE::uint8 ASCIIKeyToEngKey(const TGE::uchar key)
 	default: return 0;
 	}
 }
+#endif

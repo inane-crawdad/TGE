@@ -4,6 +4,10 @@
 #include "windows\MainWindow.h"
 #include "windows\PlatformRender.h"
 #include "windows\PlatformInput.h"
+#elif defined(PLATFORM_ANDROID)
+#include "android\MainWindow.h"
+#include "android\PlatformRender.h"
+#include "android\PlatformInput.h"
 #endif
 
 HRESULT CPlatformSubsystemManager::GetPlatformSubsystem(TGE::ICore *pCore, E_PLATFORM_SUB_SYSTEM_TYPE type, IPlatformSubsystem *&pPSS)

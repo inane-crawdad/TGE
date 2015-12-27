@@ -37,7 +37,7 @@ HRESULT CPlatformRender::Initialize(const TWindowParams &winParams)
 	pfd.cRedBits		= 8;
 	pfd.cGreenBits		= 8;
 	pfd.cBlueBits		= 8;
-	pfd.cDepthBits		= 32;
+	pfd.cDepthBits		= 24;
 
 	int pixel_format = NULL;
 
@@ -165,15 +165,24 @@ HRESULT CPlatformRender::MakeCurrent()
 	if (_hGLRC != NULL && _hDC != NULL)
 	{
 		if (wglGetCurrentContext() != _hGLRC)
-		{
 			wglMakeCurrent(_hDC, _hGLRC);
-			return S_OK;
-		}
-		else
-			return S_OK;
+		
+		return S_OK;
 	}
 	else
 		return E_ABORT;
+}
+
+HRESULT CPlatformRender::IsContextValid(bool &flag)
+{
+	flag = true;
+	return S_OK;
+}
+
+HRESULT CPlatformRender::IsContextChanged(bool &flag)
+{
+	flag = false;
+	return S_OK;
 }
 
 HRESULT CPlatformRender::GetPlatformSubsystemType(E_PLATFORM_SUB_SYSTEM_TYPE &pst)

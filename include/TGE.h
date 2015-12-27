@@ -6,6 +6,15 @@
 #define PLATFORM_WINDOWS
 #include <Windows.h>
 #define STRUCT_ALIGN_1
+#define TGE_EXPORT __declspec(dllexport)
+#define TGE_DESKTOP
+
+#elif defined(ANDROID) || defined(__ANDROID__)
+
+#define PLATFORM_ANDROID
+#include <android_native_app_glue.h>
+#define TGE_EXPORT
+#define TGE_MOBILE
 
 #else
 #error("Unknown platform")
@@ -43,8 +52,6 @@ namespace TGE
 		EIF_NO_LOG				= 0x00000001
 	};
 
-	class IInput;
-
 	class ICore : public ITGE_Base
 	{
 	public:
@@ -57,7 +64,7 @@ namespace TGE
 		virtual HRESULT CALLBACK GetEngineSubsystem(E_ENGINE_SUB_SYSTEM engSubsystemType, IEngineSubsystem *&pEngSubsystem) = 0;
 	};
 
-#ifdef PLATFORM_WINDOWS
+#ifdef TGE_DESKTOP
 
 	enum E_INPUT_CONFIGURATION_FLAGS
 	{
@@ -75,13 +82,18 @@ namespace TGE
 		virtual HRESULT CALLBACK GetMouseState(TMouseState& mouseState) = 0;
 	};
 #endif
+
+#ifdef TGE_MOBILE
+	class IInput : public IEngineSubsystem
+	{};
+#endif
 	
 #ifdef __cplusplus
 	extern"C"
 	{
 #endif
-		__declspec(dllexport) bool GetEngine(TGE::ICore *& pICore);
-		__declspec(dllexport) void FreeEngine();
+		TGE_EXPORT bool GetEngine(TGE::ICore *& pICore);
+		TGE_EXPORT void FreeEngine();
 #ifdef __cplusplus
 	}
 #endif

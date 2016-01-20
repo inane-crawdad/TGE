@@ -51,6 +51,9 @@
     <ClInclude Include="..\..\src\engine\MobileInput\Input.h">
       <Filter>Platform\android</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\engine\platform\android\GestureDetector.h">
+      <Filter>Platform\android</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\engine\main.cpp" />
@@ -92,6 +95,9 @@
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\engine\MobileInput\Input.cpp">
+      <Filter>Platform\android</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\engine\platform\android\GestureDetector.cpp">
       <Filter>Platform\android</Filter>
     </ClCompile>
   </ItemGroup>

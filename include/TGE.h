@@ -84,8 +84,22 @@ namespace TGE
 #endif
 
 #ifdef TGE_MOBILE
+
+	enum E_GESTURE_TYPE
+	{
+		GT_NONE			= 0,
+		GT_TAPS			= 1,
+		GT_DOUBLE_TAPS	= 1 << 1,
+		GT_DRAGS		= 1 << 2,
+		GT_PINCH		= 1 << 3
+	};
+
 	class IInput : public IEngineSubsystem
-	{};
+	{
+	public:
+		virtual HRESULT CALLBACK Configure(E_GESTURE_TYPE flags, const TTouchParams& touchParams) = 0;
+		virtual HRESULT CALLBACK GetGestureState(E_GESTURE_TYPE gestureType, TGestureState& gestureState) = 0;
+	};
 #endif
 	
 #ifdef __cplusplus

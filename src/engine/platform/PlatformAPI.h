@@ -67,9 +67,27 @@ public:
 	virtual HRESULT Free() = 0;
 };
 #elif defined(TGE_MOBILE)
+enum E_GESTURE_DETECTOR_TYPE
+{
+	GDT_TAP = 0,
+	GDT_DOUBLE_TAP,
+	GDT_DRAG,
+	GDT_PINCH
+};
+
+class IGestureDetector
+{
+public:
+	virtual HRESULT GetGestureState(TGE::TGestureState& gestureState) = 0;
+	virtual HRESULT Detect(const TGE::TWindowMessage &msg) = 0;
+	virtual HRESULT UpdateState() = 0;
+};
+
 class IPlatformInput : public IPlatformSubsystem
 {
 public:
+	virtual HRESULT Configure(const TGE::TTouchParams& touchParams) = 0;
+	virtual HRESULT GetGestureDetector(E_GESTURE_DETECTOR_TYPE type, IGestureDetector *&pGestureDetector) = 0;
 	virtual HRESULT Free() = 0;
 };
 #endif

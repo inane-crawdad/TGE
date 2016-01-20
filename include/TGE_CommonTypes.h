@@ -20,6 +20,10 @@ typedef long int HRESULT;
 #define FAILED(hr) (((HRESULT)(hr)) < 0)
 #endif
 
+#ifdef TGE_MOBILE
+#include <vector>
+#endif
+
 namespace TGE
 {
 
@@ -245,6 +249,38 @@ namespace TGE
 		KEY_NUMPADSLASH = 0xB5,
 		KEY_NUMLOCK = 0x45,
 	}; //enum E_KEYBOARD_KEY_CODES
+#endif
+
+#ifdef TGE_MOBILE
+
+	struct TScreenPoint
+	{
+		float x, y;
+	};
+
+	struct TTouchPointer
+	{
+		TScreenPoint oldPoint;
+		TScreenPoint currentPoint;
+		int id;
+	};
+
+	struct TGestureState
+	{
+		std::vector<TScreenPoint> points;
+		std::vector<TTouchPointer> touchPointers;
+	};
+
+	struct TTouchParams
+	{
+		uint16 tapTimeout;
+		uint16 doubleTapTimeout;
+		uint16 tapSlop;
+		uint16 doubleTapSlop;
+
+		TTouchParams(uint16 tapTimeout = 180, uint16 doubleTapTimeout = 300, uint16 tapSlop = 8, uint16 doubleTapSlop = 100) :
+			tapTimeout(tapTimeout), doubleTapTimeout(doubleTapTimeout), tapSlop(tapSlop), doubleTapSlop(doubleTapSlop){}
+	};
 #endif
 
 #if defined(PLATFORM_WINDOWS) && defined(STRUCT_ALIGN_1)
